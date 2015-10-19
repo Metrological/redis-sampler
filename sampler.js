@@ -20,7 +20,7 @@ _.each(args, function(arg) {
 });
 
 if (!realArgs.length || !realArgs[0]) {
-    console.error("Usage: node sampler REDIS_MATCH [REGULAR_EXPR] [--regex-inverse] [--delete=SECURITY_HASH] [--reset-expire=SECONDS] [--max-levels=LEVELS]");
+    console.error("Usage: node sampler REDIS_MATCH [REGULAR_EXPR] [--regex-inverse] [--delete=SECURITY_HASH] [--reset-expire=SECONDS] [--display-max-levels=LEVELS] [--display-no-leaf]");
 }
 
 if (argOptions.hasOwnProperty('delete')) {
@@ -28,7 +28,6 @@ if (argOptions.hasOwnProperty('delete')) {
     var crypto = require('crypto');
 
     var str = realArgs.join(' ');
-    var otherOptions = {};
     _.each(argOptions, function(value, key) {
         if (key != 'delete') {
             str += ' ' + key + (value ? '=' + value : '');
@@ -101,7 +100,7 @@ var outputGrouped = function() {
     _.each(measurements, function(size, key) {
         var groups = key.split(':');
 
-        var node = getNode(measurementsTree, groups, argOptions['max-levels'] || null);
+        var node = getNode(measurementsTree, groups, argOptions['display-max-levels'] || null);
 
         do {
             node.count++;
@@ -114,19 +113,27 @@ var outputGrouped = function() {
         var str = "{SIZE: " + (node.size / 1e6).toFixed(2) + "MB, COUNT: " + node.count + ", AVG: " + (node.count ? (node.size / node.count) / 1e3 : 0).toFixed(2) + "KB";
 
         var size = _.size(node.children);
+        var childrenShown = false;
         if (size > 0) {
-            str += "\n";
             var keys = _.keys(node.children).sort();
             _.each(keys, function(key) {
                 var child = node.children[key];
-                if (size < 100 || _.size(child.children)) {
+                if (!argOptions.hasOwnProperty('display-no-leaf') || _.size(child.children)) {
+                    if (!childrenShown) {
+                        str += "\n";
+                        childrenShown = true;
+                    }
                     str += indent + "  " + key + ": " + outputTree(child, "  " + indent) + "\n";
                 }
             });
+        }
+
+        if (childrenShown) {
             str += indent + "}";
         } else {
             str += "}";
         }
+
         return str;
     };
     var str = outputTree(measurementsTree, "");
