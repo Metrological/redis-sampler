@@ -41,7 +41,7 @@ if (argOptions.hasOwnProperty('delete')) {
     }
 }
 
-var redisClient = redis.createClient({host: argOptions['host'] || '127.0.0.1', port: argOptions['port'] || '6379'});
+var redisClient = redis.createClient(argOptions['port'] || '6379', argOptions['host'] || '127.0.0.1');
 
 /**
  * Executes the command.
