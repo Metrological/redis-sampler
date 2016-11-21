@@ -20,7 +20,7 @@ _.each(args, function(arg) {
 });
 
 if (!realArgs.length || !realArgs[0]) {
-    console.error("Usage: node sampler REDIS_MATCH [REGULAR_EXPR] [--regex-inverse] [--delete=SECURITY_HASH] [--reset-expire=SECONDS] [--display-max-levels=LEVELS] [--display-no-leaf]");
+    console.error("Usage: node sampler REDIS_MATCH [REGULAR_EXPR] [--regexp-inverse] [--delete=SECURITY_HASH] [--reset-expire=SECONDS] [--display-max-levels=LEVELS] [--display-no-leaf] [--host=HOST] [--port=PORT]");
 }
 
 if (argOptions.hasOwnProperty('delete')) {
