@@ -242,10 +242,10 @@ var doSample = function(keys, offset, end, cb) {
         if (err) return cb(err);
         _.each(res, function(count, index) {
             if (count !== null) {
-                measurements[keys[index + offset]] = count;
                 totals.size += count;
-                totals.count++;
             }
+            measurements[keys[index + offset]] = count;
+            totals.count++;
         });
 
         cb();
