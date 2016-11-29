@@ -221,7 +221,7 @@ var doSample = function(keys, offset, end, cb) {
                             if (err) {
                                 console.error(err);
                             } else {
-                                redisClient.setex(key, expire, v, function(err) {
+                                redisClient.setex([key, expire, v], function(err) {
                                     if (err) console.error(err);
                                 });
                             }
