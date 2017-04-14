@@ -214,16 +214,18 @@ var doSample = function(keys, offset, end, cb) {
                     }
                 });
 
-                if (argOptions['reset-expire']) {
+                if (argOptions['reset-expire'] !== undefined) {
                     var expire = parseInt(argOptions['reset-expire']);
                     if (expire > 0) {
-                        redisClient.get(key, function(err, v) {
+                        redisClient.expire([key, expire], function(err) {
                             if (err) {
                                 console.error(err);
-                            } else {
-                                redisClient.setex([key, expire, v], function(err) {
-                                    if (err) console.error(err);
-                                });
+                            }
+                        });
+                    } else {
+                        redisClient.persist(key, function(err) {
+                            if (err) {
+                                console.error(err);
                             }
                         });
                     }
